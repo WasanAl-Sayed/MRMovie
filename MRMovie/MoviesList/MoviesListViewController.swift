@@ -22,6 +22,7 @@ class MoviesListViewController: UIViewController {
 }
 
 extension MoviesListViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
