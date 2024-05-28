@@ -31,6 +31,9 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="spy-z9-PKN"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="wKj-7T-KYY">
+                                <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -38,14 +41,17 @@
                             <constraint firstItem="QpB-Z3-pei" firstAttribute="top" secondItem="lTd-Cr-t5Q" secondAttribute="bottom" id="0fP-vB-5t3"/>
                             <constraint firstItem="lTd-Cr-t5Q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GxO-cx-Xca"/>
                             <constraint firstItem="lTd-Cr-t5Q" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="MID-1k-ukl"/>
+                            <constraint firstItem="wKj-7T-KYY" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="NRU-ua-Oxq"/>
                             <constraint firstAttribute="trailing" secondItem="QpB-Z3-pei" secondAttribute="trailing" id="Nyi-oL-LTB"/>
                             <constraint firstAttribute="trailing" secondItem="lTd-Cr-t5Q" secondAttribute="trailing" id="Vc0-ef-gbD"/>
                             <constraint firstItem="QpB-Z3-pei" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="mpW-wP-Fcs"/>
+                            <constraint firstItem="wKj-7T-KYY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="o8l-3F-bxP"/>
                             <constraint firstAttribute="bottom" secondItem="QpB-Z3-pei" secondAttribute="bottom" id="ySS-T3-u2f"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="MR Movie" id="UqN-m6-vsY"/>
                     <connections>
+                        <outlet property="loadingIndicator" destination="wKj-7T-KYY" id="3BI-Jh-y7X"/>
                         <outlet property="moviesTableview" destination="QpB-Z3-pei" id="HTf-TN-E5X"/>
                     </connections>
                 </viewController>
