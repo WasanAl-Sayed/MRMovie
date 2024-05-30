@@ -32,3 +32,7 @@ struct MovieImage: Codable {
     let medium: String
     let original: String
 }
+
+struct SearchResult: Codable {
+    let show: MovieModel
+}

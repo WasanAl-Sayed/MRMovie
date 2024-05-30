@@ -17,8 +17,10 @@ class MoviesListViewModel {
     // MARK: - Properties
     
     private(set) var moviesList: [MovieModel] = []
+    private(set) var filteredMoviesList: [MovieModel] = []
     private var page = 1
     private var isLoading = false
+    var isPaginationActive = false
     
     var isInternetConnected: Bool {
         NetworkMonitor.shared.isConnected
@@ -30,15 +32,18 @@ class MoviesListViewModel {
         guard !isLoading else { return }
         self.page = page
         isLoading = true
+        isPaginationActive = true
         
         Task {
             do {
                 let movies = try await Client.fetchMovies(page: page)
                 self.moviesList += movies
+                self.filteredMoviesList = moviesList
                 self.isLoading = false
                 onDataFetched?()
             } catch {
                 self.isLoading = false
+                isPaginationActive = false
                 print(error.localizedDescription)
                 onShowError?(Constants.errorMessage)
             }
@@ -50,10 +55,34 @@ class MoviesListViewModel {
         fetchMovies(page: page + 1)
     }
     
-    func loadMovies() {if isInternetConnected {
+    func loadMovies() {
+        if isInternetConnected {
             fetchMovies()
         } else {
             onShowError?(Constants.alertMessage)
+        }
+    }
+    
+    func searchMovies(name: String) {
+        guard !isLoading else { return }
+        isLoading = true
+        isPaginationActive = false
+        
+        Task {
+            do {
+                if name.isEmpty {
+                    self.filteredMoviesList = self.moviesList
+                } else {
+                    let movies = try await Client.searchMovies(name: name)
+                    self.filteredMoviesList = movies
+                }
+                self.isLoading = false
+                onDataFetched?()
+            } catch {
+                self.isLoading = false
+                print(error.localizedDescription)
+                onShowError?(Constants.errorMessage)
+            }
         }
     }
 }

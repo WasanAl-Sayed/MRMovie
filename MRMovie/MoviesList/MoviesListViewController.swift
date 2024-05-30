@@ -17,6 +17,7 @@ class MoviesListViewController: UIViewController {
     // MARK: - Properties
     
     private let viewModel = MoviesListViewModel()
+    private var searchTask: DispatchWorkItem?
     let spinner = UIActivityIndicatorView(style: .medium)
     
     // MARK: - Lifecycle
@@ -81,13 +82,15 @@ class MoviesListViewController: UIViewController {
     }
 }
 
-extension MoviesListViewController: UITableViewDelegate, UITableViewDataSource {
+extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    // MARK: - UITableViewDataSource Methods
     
     func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return viewModel.moviesList.count
+        return viewModel.filteredMoviesList.count
     }
     
     func tableView(
@@ -100,7 +103,7 @@ extension MoviesListViewController: UITableViewDelegate, UITableViewDataSource {
             for: indexPath
         ) as? MovieTableViewCell
         
-        let movieModel = viewModel.moviesList[indexPath.item]
+        let movieModel = viewModel.filteredMoviesList[indexPath.item]
         let cellUIModel = MovieCellUIModel(
             movieImage: movieModel.image.medium,
             movieName: movieModel.name,
@@ -112,6 +115,8 @@ extension MoviesListViewController: UITableViewDelegate, UITableViewDataSource {
         return cell ?? MovieTableViewCell()
     }
     
+    // MARK: - UITableViewDelegate Methods
+    
     func tableView(
         _ tableView: UITableView,
         willDisplay cell: UITableViewCell,
@@ -119,11 +124,26 @@ extension MoviesListViewController: UITableViewDelegate, UITableViewDataSource {
     ) {
         let lastSectionIndex = tableView.numberOfSections - 1
         let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
-        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
+        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex && viewModel.isPaginationActive {
             configureSpinner()
             moviesTableview.tableFooterView = spinner
             spinnerLoadingStatus(isLoading: true)
             viewModel.fetchNextPage()
         }
+    }
+}
+
+extension MoviesListViewController: UISearchBarDelegate {
+    
+    func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchText: String
+    ) {
+        searchTask?.cancel()
+        let task = DispatchWorkItem { [weak self] in
+            self?.viewModel.searchMovies(name: searchText)
+        }
+        searchTask = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: task)
     }
 }

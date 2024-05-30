@@ -40,4 +40,34 @@ class Client {
             }
         }
     }
+    
+    static func searchMovies(name: String) async throws -> [MovieModel] {
+        let url = "\(Constants.searchURL)\(name)"
+        return try await withCheckedThrowingContinuation { continuation in
+            AF.request(
+                url,
+                method: .get,
+                parameters: nil,
+                encoding: URLEncoding.default,
+                headers: nil,
+                interceptor: nil
+            )
+            .response { response in
+                switch response.result {
+                case .success(let data):
+                    do {
+                        let searchResults = try JSONDecoder().decode([SearchResult].self, from: data!)
+                        let movies = searchResults.map { $0.show }
+                        continuation.resume(returning: movies)
+                    } catch {
+                        print("Decoding error: \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    print("Request error: \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 }

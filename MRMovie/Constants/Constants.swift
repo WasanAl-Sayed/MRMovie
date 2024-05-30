@@ -12,4 +12,5 @@ struct Constants {
     static let alertMessage = "The internet connection appears to be offline."
     static let alertButton = "Ok"
     static let errorMessage = "Error fetching movies"
+    static let searchURL = "https://api.tvmaze.com/search/shows?q="
 }
