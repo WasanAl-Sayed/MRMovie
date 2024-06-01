@@ -8,31 +8,31 @@
 import UIKit
 
 struct MovieModel: Codable {
-    let id: Int
-    let name: String
-    let type: String
-    let genres: [String]
-    let status: String
-    let schedule: Schedule
-    let rating: Rating
-    let weight: Int
-    let image: MovieImage
+    let id: Int?
+    let name: String?
+    let type: String?
+    let genres: [String]?
+    let status: String?
+    let schedule: ScheduleModel?
+    let rating: RatingModel?
+    let weight: Int?
+    let image: MovieImageModel?
 }
 
-struct Schedule: Codable {
+struct ScheduleModel: Codable {
     let time: String
     let days: [String]
 }
 
-struct Rating: Codable {
+struct RatingModel: Codable {
     let average: Double?
 }
 
-struct MovieImage: Codable {
+struct MovieImageModel: Codable {
     let medium: String
     let original: String
 }
 
-struct SearchResult: Codable {
+struct SearchResultModel: Codable {
     let show: MovieModel
 }

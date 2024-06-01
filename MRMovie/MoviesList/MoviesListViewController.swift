@@ -24,13 +24,25 @@ class MoviesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        moviesTableview.register(MovieTableViewCell.nib(), forCellReuseIdentifier: MovieTableViewCell.identifier)
+        configureViews()
         bindViewModel()
-        loadingIndicator.startAnimating()
-        viewModel.loadMovies()
+        viewModel.fetchMovies()
     }
     
     // MARK: - Helper Methods
+    
+    private func configureViews() {
+        configureTableFooter()
+        moviesTableview.register(MovieTableViewCell.nib(), forCellReuseIdentifier: MovieTableViewCell.identifier)
+        loadingIndicator.startAnimating()
+    }
+    
+    private func configureTableFooter() {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 50))
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        moviesTableview.tableFooterView = footerView
+    }
     
     private func bindViewModel() {
         viewModel.onDataFetched = { [weak self] in
@@ -50,19 +62,9 @@ class MoviesListViewController: UIViewController {
         }
     }
     
-    private func configureSpinner() {
-        spinner.hidesWhenStopped = true
-        spinner.frame = CGRect(
-            x: CGFloat(0),
-            y: CGFloat(0),
-            width: moviesTableview.bounds.width,
-            height: CGFloat(30)
-        )
-    }
-    
-    private func showAlert(message: String) {
+    private func showAlert(title: String = Constants.alertTitle, message: String) {
         let alertController = UIAlertController(
-            title: Constants.alertTitle,
+            title: title,
             message: message,
             preferredStyle: .alert
         )
@@ -90,7 +92,7 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return viewModel.filteredMoviesList.count
+        return viewModel.moviesListCellUIModel.count
     }
     
     func tableView(
@@ -103,32 +105,27 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
             for: indexPath
         ) as? MovieTableViewCell
         
-        let movieModel = viewModel.filteredMoviesList[indexPath.item]
-        let cellUIModel = MovieCellUIModel(
-            movieImage: movieModel.image.medium,
-            movieName: movieModel.name,
-            movieType: movieModel.type,
-            movieRating: movieModel.rating.average ?? 0.0
-        )
+        let cellUIModel = viewModel.moviesListCellUIModel[indexPath.item]
         cell?.configureCell(cellUIModel: cellUIModel)
         
-        return cell ?? MovieTableViewCell()
+        return cell ?? UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
     // MARK: - UITableViewDelegate Methods
     
-    func tableView(
-        _ tableView: UITableView,
-        willDisplay cell: UITableViewCell,
-        forRowAt indexPath: IndexPath
-    ) {
-        let lastSectionIndex = tableView.numberOfSections - 1
-        let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
-        if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex && viewModel.isPaginationActive {
-            configureSpinner()
-            moviesTableview.tableFooterView = spinner
-            spinnerLoadingStatus(isLoading: true)
-            viewModel.fetchNextPage()
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        
+        if offsetY > contentHeight - scrollView.frame.height {
+            if !viewModel.isLoading && !viewModel.isSearching {
+                spinnerLoadingStatus(isLoading: true)
+                viewModel.fetchNextPage()
+            }
         }
     }
 }
