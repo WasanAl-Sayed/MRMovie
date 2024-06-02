@@ -18,7 +18,7 @@ class MoviesListViewController: UIViewController {
     
     private let viewModel = MoviesListViewModel()
     private var searchTask: DispatchWorkItem?
-    let spinner = UIActivityIndicatorView(style: .medium)
+    let footerView = TableViewFooter()
     
     // MARK: - Lifecycle
     
@@ -34,13 +34,12 @@ class MoviesListViewController: UIViewController {
     private func configureViews() {
         configureTableFooter()
         moviesTableview.register(MovieTableViewCell.nib(), forCellReuseIdentifier: MovieTableViewCell.identifier)
+        moviesTableview.register(TableViewFooter.nib(), forHeaderFooterViewReuseIdentifier: TableViewFooter.identifier)
         loadingIndicator.startAnimating()
     }
     
     private func configureTableFooter() {
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 50))
-        spinner.center = footerView.center
-        footerView.addSubview(spinner)
+        footerView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: 50)
         moviesTableview.tableFooterView = footerView
     }
     
@@ -48,7 +47,7 @@ class MoviesListViewController: UIViewController {
         viewModel.onDataFetched = { [weak self] in
             DispatchQueue.main.async {
                 self?.loadingIndicator.stopAnimating()
-                self?.spinnerLoadingStatus(isLoading: false)
+                self?.footerView.stopAnimating()
                 self?.moviesTableview.reloadData()
             }
         }
@@ -56,7 +55,7 @@ class MoviesListViewController: UIViewController {
         viewModel.onShowError = { [weak self] errorMessage in
             DispatchQueue.main.async {
                 self?.loadingIndicator.stopAnimating()
-                self?.spinnerLoadingStatus(isLoading: false)
+                self?.footerView.stopAnimating()
                 self?.showAlert(message: errorMessage)
             }
         }
@@ -71,16 +70,6 @@ class MoviesListViewController: UIViewController {
         let okAction = UIAlertAction(title: Constants.alertButton, style: .default)
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
-    }
-    
-    private func spinnerLoadingStatus(isLoading: Bool) {
-        if isLoading {
-            spinner.startAnimating()
-            moviesTableview.tableFooterView?.isHidden = false
-        } else {
-            spinner.stopAnimating()
-            moviesTableview.tableFooterView?.isHidden = true
-        }
     }
 }
 
@@ -123,7 +112,7 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         if offsetY > contentHeight - scrollView.frame.height {
             if !viewModel.isLoading && !viewModel.isSearching {
-                spinnerLoadingStatus(isLoading: true)
+                footerView.startAnimating()
                 viewModel.fetchNextPage()
             }
         }

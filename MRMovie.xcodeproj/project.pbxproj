@@ -27,6 +27,7 @@
 		2FC89C932BFF675D005BEB70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FC89C922BFF675D005BEB70 /* Assets.xcassets */; };
 		2FC89C962BFF675D005BEB70 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FC89C942BFF675D005BEB70 /* LaunchScreen.storyboard */; };
 		2FCABDA92C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCABDA82C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift */; };
+		2FCABDAC2C0C589E001AA802 /* TableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCABDAB2C0C589E001AA802 /* TableViewFooter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		2FC89C952BFF675D005BEB70 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2FC89C972BFF675D005BEB70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2FCABDA82C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		2FCABDAB2C0C589E001AA802 /* TableViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewFooter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,8 +136,9 @@
 				2F36E8512C0280000034CCBA /* Networking */,
 				2FC89C9D2BFF6785005BEB70 /* MovieTableViewCell */,
 				2F36E8542C0284570034CCBA /* Constants */,
-				2FC89C892BFF675B005BEB70 /* AppDelegate.swift */,
+				2FCABDAA2C0C584F001AA802 /* Footer */,
 				2FC89C8B2BFF675B005BEB70 /* SceneDelegate.swift */,
+				2FC89C892BFF675B005BEB70 /* AppDelegate.swift */,
 				2FC89C922BFF675D005BEB70 /* Assets.xcassets */,
 				2FC89C942BFF675D005BEB70 /* LaunchScreen.storyboard */,
 				2FC89C972BFF675D005BEB70 /* Info.plist */,
@@ -152,6 +155,14 @@
 				2FCABDA82C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift */,
 			);
 			path = MovieTableViewCell;
+			sourceTree = "<group>";
+		};
+		2FCABDAA2C0C584F001AA802 /* Footer */ = {
+			isa = PBXGroup;
+			children = (
+				2FCABDAB2C0C589E001AA802 /* TableViewFooter.swift */,
+			);
+			path = Footer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,6 +256,7 @@
 				2FC8195C2C03350700A0F796 /* MovieCellUIModel.swift in Sources */,
 				2F36E8422C01FAA10034CCBA /* MoviesListViewController.swift in Sources */,
 				2F36E8462C0270D00034CCBA /* MovieTableViewCell.swift in Sources */,
+				2FCABDAC2C0C589E001AA802 /* TableViewFooter.swift in Sources */,
 				2F36E8532C0280110034CCBA /* Client.swift in Sources */,
 				2FC89C8C2BFF675B005BEB70 /* SceneDelegate.swift in Sources */,
 				2F36E8562C02847C0034CCBA /* Constants.swift in Sources */,
