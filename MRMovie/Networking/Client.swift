@@ -15,7 +15,9 @@ class Client {
     static func performRequest<T: Decodable>(
         url: String,
         method: HTTPMethod,
-        parameters: Parameters?,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
+        headers: HTTPHeaders? = nil,
         decode: @escaping (Data) throws -> T
     ) async throws -> T {
         
@@ -24,15 +26,25 @@ class Client {
                 url,
                 method: method,
                 parameters: parameters,
-                encoding: URLEncoding.default,
-                headers: nil,
+                encoding: encoding,
+                headers: headers,
                 interceptor: nil
             )
             .response { response in
                 switch response.result {
                 case .success(let data):
+                    guard let data = data else {
+                        continuation.resume(
+                            throwing: NSError(
+                                domain: "ClientErrorDomain",
+                                code: -1,
+                                userInfo: [NSLocalizedDescriptionKey: "No data received"]
+                            )
+                        )
+                        return
+                    }
                     do {
-                        let result = try decode(data!)
+                        let result = try decode(data)
                         continuation.resume(returning: result)
                     } catch {
                         continuation.resume(throwing: error)
@@ -43,16 +55,18 @@ class Client {
             }
         }
     }
+    
+    private static func decodeResponse<T: Decodable>(_ data: Data) throws -> T {
+        return try JSONDecoder().decode(T.self, from: data)
+    }
 
     static func fetchMovies(page: Int) async throws -> [MovieModel] {
         let url = "\(Constants.url)\(page)"
         return try await performRequest(
             url: url,
             method: .get,
-            parameters: nil
-        ) { data in
-            return try JSONDecoder().decode([MovieModel].self, from: data)
-        }
+            decode: decodeResponse
+        )
     }
 
     static func searchMovies(name: String) async throws -> [MovieModel] {
@@ -60,10 +74,10 @@ class Client {
         return try await performRequest(
             url: url,
             method: .get,
-            parameters: nil
-        ) { data in
-            let searchResults = try JSONDecoder().decode([SearchResultModel].self, from: data)
-            return searchResults.map { $0.show }
-        }
+            decode: { data in
+                let searchResults: [SearchResultModel] = try decodeResponse(data)
+                return searchResults.map { $0.show }
+            }
+        )
     }
 }
