@@ -55,7 +55,7 @@ class MoviesListViewModel {
                 isLoading = false
             }
             do {
-                moviesList += try await Client.fetchMovies(page: page)
+                moviesList += try await MovieClient.fetchMovies(page: page)
                 fetchMoviesCompletion()
             } catch {
                 let errorMessage = parseError(error.localizedDescription)
@@ -87,7 +87,8 @@ class MoviesListViewModel {
                 isLoading = false
             }
             do {
-                moviesList = try await Client.searchMovies(name: name)
+                let searchList = try await MovieClient.searchMovies(name: name)
+                moviesList = searchList.map{ $0.show }
                 fetchMoviesCompletion()
             } catch {
                 let errorMessage = parseError(error.localizedDescription)

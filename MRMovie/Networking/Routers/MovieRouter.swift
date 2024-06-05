@@ -5,10 +5,10 @@
 //  Created by fts on 04/06/2024.
 //
 
-import UIKit
+import Foundation
 import Alamofire
 
-enum MovieRouter: URLRequestConvertible {
+enum MovieRouter: BaseRouter {
     
     // MARK: - Endpoints
     
@@ -19,10 +19,10 @@ enum MovieRouter: URLRequestConvertible {
     
     var path: String {
         switch self {
-        case .fetchMovies(let page):
-            return Constants.url
-        case .searchMovies(let name):
-            return Constants.searchURL
+        case .fetchMovies:
+            return "/shows"
+        case .searchMovies:
+            return "/search/shows"
         }
     }
     
@@ -44,12 +44,5 @@ enum MovieRouter: URLRequestConvertible {
         case .searchMovies(let name):
             return ["q": name]
         }
-    }
-    
-    func asURLRequest() throws -> URLRequest {
-        let url = try Constants.baseURL.asURL().appendingPathComponent(path)
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
-        return try URLEncoding.default.encode(request, with: parameters)
     }
 }
