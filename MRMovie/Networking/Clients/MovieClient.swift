@@ -20,4 +20,9 @@ class MovieClient: BaseClient {
         let router = MovieRouter.searchMovies(name: name)
         return try await performRequest(router: router)
     }
+    
+    static func fetchMovieDetails(id: Int) async throws -> MovieDetailsModel {
+        let router = MovieRouter.movieDetails(id: id)
+        return try await performRequest(router: router)
+    }
 }

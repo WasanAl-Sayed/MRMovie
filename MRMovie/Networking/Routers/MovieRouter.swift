@@ -14,6 +14,7 @@ enum MovieRouter: BaseRouter {
     
     case fetchMovies(page: Int)
     case searchMovies(name: String)
+    case movieDetails(id: Int)
     
     // MARK: - Paths
     
@@ -23,6 +24,8 @@ enum MovieRouter: BaseRouter {
             return "/shows"
         case .searchMovies:
             return "/search/shows"
+        case .movieDetails(let id):
+            return "/shows/\(id)"
         }
     }
     
@@ -30,7 +33,7 @@ enum MovieRouter: BaseRouter {
     
     var method: HTTPMethod {
         switch self {
-        case .fetchMovies, .searchMovies:
+        case .fetchMovies, .searchMovies, .movieDetails:
             return .get
         }
     }
@@ -43,6 +46,8 @@ enum MovieRouter: BaseRouter {
             return ["page": page]
         case .searchMovies(let name):
             return ["q": name]
+        case .movieDetails:
+            return nil
         }
     }
 }

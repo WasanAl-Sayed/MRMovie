@@ -117,6 +117,21 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
             }
         }
     }
+    
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let movieDetailsVC = storyboard.instantiateViewController(withIdentifier: "MovieDetailsViewController") as? MovieDetailsViewController {
+            let movieName = viewModel.moviesList[indexPath.item].name ?? ""
+            let movieId = viewModel.moviesList[indexPath.item].id ?? 0
+            let movieDetailsViewModel = MovieDetailsViewModel(movieName: movieName, movieId: movieId)
+            movieDetailsVC.viewModel = movieDetailsViewModel
+            navigationController?.pushViewController(movieDetailsVC, animated: true)
+        }
+    }
 }
 
 extension MoviesListViewController: UISearchBarDelegate {
