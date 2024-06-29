@@ -13,12 +13,15 @@ class MoviesListViewController: UIViewController {
     
     @IBOutlet weak var moviesTableview: UITableView!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var emptyResultLabel: UILabel!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     // MARK: - Properties
     
     private let viewModel = MoviesListViewModel()
-    private var searchTask: DispatchWorkItem?
     let footerView = TableViewFooter()
+    private var searchTask: DispatchWorkItem?
+    private var searchActivityIndicator: UIActivityIndicatorView?
     
     // MARK: - Lifecycle
     
@@ -33,8 +36,8 @@ class MoviesListViewController: UIViewController {
     
     private func configureViews() {
         configureTableFooter()
-        moviesTableview.register(MovieTableViewCell.nib(), forCellReuseIdentifier: MovieTableViewCell.identifier)
-        moviesTableview.register(TableViewFooter.nib(), forHeaderFooterViewReuseIdentifier: TableViewFooter.identifier)
+        configureTableView()
+        configureSearchBar()
         loadingIndicator.startAnimating()
     }
     
@@ -43,22 +46,53 @@ class MoviesListViewController: UIViewController {
         moviesTableview.tableFooterView = footerView
     }
     
+    private func configureTableView() {
+        moviesTableview.register(MovieTableViewCell.nib(), forCellReuseIdentifier: MovieTableViewCell.identifier)
+        moviesTableview.register(TableViewFooter.nib(), forHeaderFooterViewReuseIdentifier: TableViewFooter.identifier)
+    }
+    
+    private func configureSearchBar() {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.hidesWhenStopped = true
+        
+        let leftView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: searchBar.frame.height))
+        activityIndicator.center = leftView.center
+        leftView.addSubview(activityIndicator)
+        
+        searchBar.searchTextField.leftView = leftView
+        searchBar.searchTextField.leftViewMode = .always
+        
+        self.searchActivityIndicator = activityIndicator
+    }
+    
     private func bindViewModel() {
         viewModel.onDataFetched = { [weak self] in
             DispatchQueue.main.async {
-                self?.loadingIndicator.stopAnimating()
-                self?.footerView.stopAnimating()
+                self?.bindViewModelUpdates()
+                self?.moviesTableview.reloadData()
+            }
+        }
+        
+        viewModel.onSearch = { [weak self] in
+            DispatchQueue.main.async {
+                self?.bindViewModelUpdates()
                 self?.moviesTableview.reloadData()
             }
         }
         
         viewModel.onShowError = { [weak self] errorMessage in
             DispatchQueue.main.async {
-                self?.loadingIndicator.stopAnimating()
-                self?.footerView.stopAnimating()
+                self?.bindViewModelUpdates()
                 self?.showAlert(message: errorMessage)
             }
         }
+    }
+    
+    private func bindViewModelUpdates() {
+        loadingIndicator.stopAnimating()
+        searchActivityIndicator?.stopAnimating()
+        footerView.stopAnimating()
+        emptyResultLabel.isHidden = !viewModel.moviesListCellUIModel.isEmpty
     }
     
     private func showAlert(title: String = Constants.alertTitle, message: String) {
@@ -76,6 +110,10 @@ class MoviesListViewController: UIViewController {
 extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource Methods
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     
     func tableView(
         _ tableView: UITableView,
@@ -98,10 +136,6 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         cell?.configureCell(cellUIModel: cellUIModel)
         
         return cell ?? UITableViewCell()
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
     }
     
     // MARK: - UITableViewDelegate Methods
@@ -141,6 +175,7 @@ extension MoviesListViewController: UISearchBarDelegate {
         textDidChange searchText: String
     ) {
         searchTask?.cancel()
+        searchActivityIndicator?.startAnimating()
         let task = DispatchWorkItem { [weak self] in
             self?.viewModel.searchMovies(name: searchText)
         }

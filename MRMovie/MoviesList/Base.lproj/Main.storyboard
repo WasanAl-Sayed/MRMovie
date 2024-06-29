@@ -34,15 +34,23 @@
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="wKj-7T-KYY">
                                 <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
                             </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No movies with this name " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilh-6U-c4h">
+                                <rect key="frame" x="86" y="414.66666666666669" width="221" height="23"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="QpB-Z3-pei" firstAttribute="top" secondItem="lTd-Cr-t5Q" secondAttribute="bottom" id="0fP-vB-5t3"/>
+                            <constraint firstItem="ilh-6U-c4h" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Div-Xt-lGz"/>
                             <constraint firstItem="lTd-Cr-t5Q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GxO-cx-Xca"/>
                             <constraint firstItem="lTd-Cr-t5Q" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="MID-1k-ukl"/>
                             <constraint firstItem="wKj-7T-KYY" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="NRU-ua-Oxq"/>
                             <constraint firstAttribute="trailing" secondItem="QpB-Z3-pei" secondAttribute="trailing" id="Nyi-oL-LTB"/>
+                            <constraint firstItem="ilh-6U-c4h" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Reb-ZK-53C"/>
                             <constraint firstAttribute="trailing" secondItem="lTd-Cr-t5Q" secondAttribute="trailing" id="Vc0-ef-gbD"/>
                             <constraint firstItem="QpB-Z3-pei" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="mpW-wP-Fcs"/>
                             <constraint firstItem="wKj-7T-KYY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="o8l-3F-bxP"/>
@@ -51,8 +59,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="MR Movie" id="UqN-m6-vsY"/>
                     <connections>
+                        <outlet property="emptyResultLabel" destination="ilh-6U-c4h" id="jUI-aW-gvH"/>
                         <outlet property="loadingIndicator" destination="wKj-7T-KYY" id="3BI-Jh-y7X"/>
                         <outlet property="moviesTableview" destination="QpB-Z3-pei" id="HTf-TN-E5X"/>
+                        <outlet property="searchBar" destination="lTd-Cr-t5Q" id="RXY-Z4-3DP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -105,9 +115,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="unF-8B-Ysg">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="unF-8B-Ysg">
                                 <rect key="frame" x="0.0" y="103" width="393" height="749"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <outlet property="dataSource" destination="fbi-r2-mig" id="jqC-zC-xgu"/>
                                     <outlet property="delegate" destination="fbi-r2-mig" id="8zZ-rj-at8"/>

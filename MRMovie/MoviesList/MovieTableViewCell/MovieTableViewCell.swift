@@ -28,10 +28,6 @@ class MovieTableViewCell: UITableViewCell {
         super.awakeFromNib()
         configureViews()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
     
     static func nib() -> UINib {
         return UINib(nibName: Constants.movieCell, bundle: nil)

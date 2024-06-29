@@ -39,6 +39,7 @@ class MovieDetailsViewController: UIViewController {
         movieDetailsTableView.isHidden = true
         movieDetailsTableView.register(DetailsTableViewCell.nib(), forCellReuseIdentifier: DetailsTableViewCell.identifier)
         movieDetailsTableView.register(CoverImageTableViewCell.nib(), forCellReuseIdentifier: CoverImageTableViewCell.identifier)
+        movieDetailsTableView.register(CustomHeaderView.self, forHeaderFooterViewReuseIdentifier: CustomHeaderView.identifier)
     }
     
     private func bindViewModel() {
@@ -46,7 +47,6 @@ class MovieDetailsViewController: UIViewController {
             DispatchQueue.main.async {
                 self?.loadingIndicator.stopAnimating()
                 self?.movieDetailsTableView.isHidden = false
-                self?.viewModel?.createSectionData()
                 self?.movieDetailsTableView.reloadData()
             }
         }
@@ -75,6 +75,10 @@ extension MovieDetailsViewController: UITableViewDataSource, UITableViewDelegate
     
     // MARK: - UITableViewDataSource Methods
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel?.sections.count ?? 0
+    }
+    
     func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
@@ -87,9 +91,10 @@ extension MovieDetailsViewController: UITableViewDataSource, UITableViewDelegate
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
         
-        guard let cellInfo = viewModel?.sections[indexPath.section].cellInfo[indexPath.row] else { return UITableViewCell() }
+        guard let sectionInfo = viewModel?.sections[indexPath.section] else { return UITableViewCell() }
+        let cellInfo = sectionInfo.cellInfo[indexPath.row]
         
-        if indexPath.section == 0 {
+        if sectionInfo.type == "cover" {
             let cell = movieDetailsTableView.dequeueReusableCell(
                 withIdentifier: CoverImageTableViewCell.identifier,
                 for: indexPath
@@ -108,25 +113,29 @@ extension MovieDetailsViewController: UITableViewDataSource, UITableViewDelegate
         }
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel?.sections.count ?? 0
-    }
-    
-    func tableView(
-        _ tableView: UITableView,
-        titleForHeaderInSection section: Int
-    ) -> String? {
-        return viewModel?.sections[section].title
-    }
-    
-    func tableView(
-        _ tableView: UITableView,
-        titleForFooterInSection section: Int
-    ) -> String? {
-        return viewModel?.sections[section].footer
-    }
-    
     // MARK: - UITableViewDelegate Methods
+    
+    func tableView(
+        _ tableView: UITableView,
+        viewForHeaderInSection section: Int
+    ) -> UIView? {
+        guard let title = viewModel?.sections[section].title else { return nil }
+        
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CustomHeaderView.identifier) as! CustomHeaderView
+        headerView.configure(with: title)
+        return headerView
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        viewForFooterInSection section: Int
+    ) -> UIView? {
+        guard let footer = viewModel?.sections[section].footer else { return nil }
+        
+        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CustomHeaderView.identifier) as! CustomHeaderView
+        footerView.configure(with: footer)
+        return footerView
+    }
     
     func tableView(
         _ tableView: UITableView,
@@ -139,10 +148,13 @@ extension MovieDetailsViewController: UITableViewDataSource, UITableViewDelegate
         _ tableView: UITableView,
         heightForFooterInSection section: Int
     ) -> CGFloat {
-        return 20
+        return 25
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(
+        _ tableView: UITableView,
+        heightForRowAt indexPath: IndexPath
+    ) -> CGFloat {
         switch indexPath.section {
         case 0:
             return 200

@@ -19,22 +19,14 @@ class DetailsTableViewCell: UITableViewCell {
     static var identifier = Constants.detailsCell
 
     // MARK: - Setup Methods
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-    }
-    
-    override var isSelected: Bool {
-        get {
-            return false // Disable selection
-        }
-        set {
-            super.isSelected = newValue
-        }
+        self.selectionStyle = .none
     }
     
     static func nib() -> UINib {

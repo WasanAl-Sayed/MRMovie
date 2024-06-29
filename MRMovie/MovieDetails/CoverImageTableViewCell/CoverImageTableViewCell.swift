@@ -20,13 +20,9 @@ class CoverImageTableViewCell: UITableViewCell {
     static var identifier = Constants.coverImageCell
     
     // MARK: - Setup Methods
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
     }
     
     static func nib() -> UINib {

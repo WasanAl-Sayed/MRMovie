@@ -21,6 +21,7 @@ struct ScheduleModel: Codable {
 }
 
 struct SectionData {
+    let type: String
     let title: String
     let footer: String
     let cellInfo: [DetailsCellUIModel]

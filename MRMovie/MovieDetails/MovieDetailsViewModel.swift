@@ -5,8 +5,6 @@
 //  Created by fts on 25/05/2024.
 //
 
-import UIKit
-
 class MovieDetailsViewModel {
     
     // MARK: - Data Binding Callbacks
@@ -16,9 +14,8 @@ class MovieDetailsViewModel {
     
     // MARK: - Properties
     
+    private var movieId: Int
     private(set) var movieName: String
-    private(set) var movieId: Int
-    private(set) var movieDetails: MovieDetailsModel?
     private(set) var sections: [SectionData] = []
     
     // MARK: - Initializer
@@ -35,25 +32,12 @@ class MovieDetailsViewModel {
         return components.last ?? errorDescription
     }
     
-    public func fetchMovieDetails() {
-        Task {
-            do {
-                movieDetails = try await MovieClient.fetchMovieDetails(id: movieId)
-                onDataFetched?()
-            } catch {
-                let errorMessage = parseError(error.localizedDescription)
-                onShowError?(errorMessage)
-            }
-        }
-    }
-    
-    public func createSectionData() {
-        guard let movieDetails = movieDetails else { return }
-        
+    private func createSectionData(movieDetails: MovieDetailsModel) {
         // Cover Image Section
         let coverImageSection = SectionData(
-            title: "COVER PHOTO",
-            footer: "This photo should be a landscape to fit the cover",
+            type: Constants.coverType,
+            title: Constants.coverTitle,
+            footer: Constants.coverFooter,
             cellInfo: [DetailsCellUIModel(info: "", image: movieDetails.image?.original ?? "")]
         )
         sections.append(coverImageSection)
@@ -61,40 +45,59 @@ class MovieDetailsViewModel {
         // Details Sections
         let detailsSections: [SectionData] = [
             SectionData(
-                title: "NAME",
+                type: Constants.infoType,
+                title: Constants.nameTitle,
                 footer: "",
-                cellInfo: [DetailsCellUIModel(info: movieDetails.name ?? "", image: Constants.images[0])]
+                cellInfo: [DetailsCellUIModel(info: movieDetails.name ?? "", image: Constants.nameImage)]
             ),
             SectionData(
-                title: "TYPE",
+                type: Constants.infoType,
+                title: Constants.typeTitle,
                 footer: "",
-                cellInfo: [DetailsCellUIModel(info: movieDetails.type ?? "", image: Constants.images[1])]
+                cellInfo: [DetailsCellUIModel(info: movieDetails.type ?? "", image: Constants.typeImage)]
             ),
             SectionData(
-                title: "SCORE",
-                footer: "The number of points",
-                cellInfo: [DetailsCellUIModel(info: "\(movieDetails.weight ?? 0)", image: Constants.images[2])]
+                type: Constants.infoType,
+                title: Constants.scoreTitle,
+                footer: Constants.scoreFooter,
+                cellInfo: [DetailsCellUIModel(info: "\(movieDetails.weight ?? 0)", image: Constants.scoreImage)]
             ),
             SectionData(
-                title: "GENRES",
-                footer: "A category of artistic composition",
-                cellInfo: [DetailsCellUIModel(info: movieDetails.genres?.joined(separator: ", ") ?? "", image: Constants.images[3])]
+                type: Constants.infoType,
+                title: Constants.genresTitle,
+                footer: Constants.genresFooter,
+                cellInfo: [DetailsCellUIModel(info: movieDetails.genres?.joined(separator: ", ") ?? "", image: Constants.genresImage)]
             ),
             SectionData(
-                title: "STATUS",
+                type: Constants.infoType,
+                title: Constants.statusTitle,
                 footer: "",
-                cellInfo: [DetailsCellUIModel(info: movieDetails.status ?? "", image: Constants.images[4])]
+                cellInfo: [DetailsCellUIModel(info: movieDetails.status ?? "", image: Constants.statusImage)]
             ),
             SectionData(
-                title: "SCHEDULE",
-                footer: "Time and Date that movie will show",
+                type: Constants.infoType,
+                title: Constants.scheduleTitle,
+                footer: Constants.timeDayFooter,
                 cellInfo: [
-                    DetailsCellUIModel(info: movieDetails.schedule?.time ?? "", image: Constants.images[5]),
-                    DetailsCellUIModel(info: movieDetails.schedule?.days.joined(separator: ", ") ?? "", image: Constants.images[6])
+                    DetailsCellUIModel(info: movieDetails.schedule?.time ?? "", image: Constants.timeImage),
+                    DetailsCellUIModel(info: movieDetails.schedule?.days.joined(separator: ", ") ?? "", image: Constants.dayImage)
                 ]
             )
         ]
         sections.append(contentsOf: detailsSections)
+    }
+    
+    public func fetchMovieDetails() {
+        Task {
+            do {
+                let movieDetails = try await MovieClient.fetchMovieDetails(id: movieId)
+                createSectionData(movieDetails: movieDetails)
+                onDataFetched?()
+            } catch {
+                let errorMessage = parseError(error.localizedDescription)
+                onShowError?(errorMessage)
+            }
+        }
     }
 }
 

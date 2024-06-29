@@ -35,6 +35,7 @@
 		2FCA1DB12C1082A40040A70D /* BaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCA1DB02C1082A40040A70D /* BaseClient.swift */; };
 		2FCABDA92C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCABDA82C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift */; };
 		2FCABDAC2C0C589E001AA802 /* TableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCABDAB2C0C589E001AA802 /* TableViewFooter.swift */; };
+		2FD05F602C3015270001BE9B /* CustomHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD05F5F2C3015270001BE9B /* CustomHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,7 @@
 		2FCA1DB02C1082A40040A70D /* BaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseClient.swift; sourceTree = "<group>"; };
 		2FCABDA82C0B2C5A001AA802 /* MovieTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		2FCABDAB2C0C589E001AA802 /* TableViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewFooter.swift; sourceTree = "<group>"; };
+		2FD05F5F2C3015270001BE9B /* CustomHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 		2F36E84A2C027F390034CCBA /* MovieDetails */ = {
 			isa = PBXGroup;
 			children = (
+				2FD05F5E2C3014E00001BE9B /* CustomHeaderView */,
 				2F36E84B2C027F6D0034CCBA /* MovieDetailsViewController.swift */,
 				2F36E84F2C027FD10034CCBA /* MovieDetailsViewModel.swift */,
 				2F519DF52C187AE5004900B6 /* DetailsTableViewCell */,
@@ -218,6 +221,14 @@
 			path = Footer;
 			sourceTree = "<group>";
 		};
+		2FD05F5E2C3014E00001BE9B /* CustomHeaderView */ = {
+			isa = PBXGroup;
+			children = (
+				2FD05F5F2C3015270001BE9B /* CustomHeaderView.swift */,
+			);
+			path = CustomHeaderView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -301,6 +312,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FD05F602C3015270001BE9B /* CustomHeaderView.swift in Sources */,
 				2FC819672C034CA400A0F796 /* MovieModel.swift in Sources */,
 				2FCA1DB12C1082A40040A70D /* BaseClient.swift in Sources */,
 				2F36E8502C027FD10034CCBA /* MovieDetailsViewModel.swift in Sources */,

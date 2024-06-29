@@ -12,6 +12,7 @@ class MoviesListViewModel {
     // MARK: - Data Binding Callbacks
     
     var onDataFetched: (() -> Void)?
+    var onSearch: (() -> Void)?
     var onShowError: ((String) -> Void)?
     
     // MARK: - Properties
@@ -35,11 +36,6 @@ class MoviesListViewModel {
         }
     }
     
-    private func fetchMoviesCompletion() {
-        mapMoviesToCellUIModels()
-        onDataFetched?()
-    }
-    
     private func parseError(_ errorDescription: String) -> String {
         let components = errorDescription.split(separator: ":").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         return components.last ?? errorDescription
@@ -56,7 +52,8 @@ class MoviesListViewModel {
             }
             do {
                 moviesList += try await MovieClient.fetchMovies(page: page)
-                fetchMoviesCompletion()
+                mapMoviesToCellUIModels()
+                onDataFetched?()
             } catch {
                 let errorMessage = parseError(error.localizedDescription)
                 onShowError?(errorMessage)
@@ -89,7 +86,8 @@ class MoviesListViewModel {
             do {
                 let searchList = try await MovieClient.searchMovies(name: name)
                 moviesList = searchList.map{ $0.show }
-                fetchMoviesCompletion()
+                mapMoviesToCellUIModels()
+                onSearch?()
             } catch {
                 let errorMessage = parseError(error.localizedDescription)
                 onShowError?(errorMessage)
